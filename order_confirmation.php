@@ -1,0 +1,7 @@
+<?php
+$pageTitle="Order Confirmation";require_once "includes/header.php";require_login();
+$orderId=(int)($_SESSION['last_order_id']??0);$stmt=$conn->prepare("SELECT id,total,address,date FROM orders WHERE id=? AND user_id=?");$stmt->bind_param("ii",$orderId,$_SESSION['user_id']);$stmt->execute();$order=$stmt->get_result()->fetch_assoc();
+?>
+<?php if($order): ?><div class="empty-state"><div class="team-avatar mx-auto mb-3"><i class="bi bi-check-lg"></i></div><span class="badge text-bg-success mb-3">ORDER PLACED</span><h1 class="section-title">Thank you for shopping!</h1><p class="text-muted">Your CampusKart order has been confirmed.</p><div class="info-card p-4 text-start mx-auto my-4" style="max-width:520px"><div class="d-flex justify-content-between"><span>Order number</span><strong>#<?= (int)$order['id'] ?></strong></div><div class="d-flex justify-content-between mt-2"><span>Total paid</span><strong><?= money($order['total']) ?></strong></div><hr><div class="fw-bold">Delivery address</div><p class="text-muted mb-0"><?= nl2br(e($order['address'])) ?></p><small class="text-muted d-block mt-2">Placed on <?= e($order['date']) ?></small></div><a href="products.php" class="btn btn-campus">Continue shopping</a></div>
+<?php else: ?><div class="empty-state"><h3>No recent order found</h3><a href="products.php" class="btn btn-campus">Browse products</a></div><?php endif; ?>
+<?php require_once "includes/footer.php"; ?>
